@@ -29,14 +29,10 @@ class   ApiKeyInputPage extends StatelessWidget {
               ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 80.0),
-              child: FlatButton(
-                child: Text('Enter', style: TextStyle(fontSize: 20.0),),
-                color: Colors.blueAccent,
-                textColor: Colors.white,
-                onPressed: () {
-
-                },
-              ),
+              child: ElevatedButton.icon(
+                  onPressed: (){},
+                  icon: Icon(Icons.save),
+                  label: Text('Save')),
             ),
           ],
         ),
