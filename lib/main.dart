@@ -5,13 +5,14 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:http/http.dart' as http;
 import 'package:my_notif_app/api_key_input_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'cryptoSearchAndNotificationSettings.dart';
 import 'local_storage_service.dart';
 
 void main() async {
   // bool isCryptoApiKeyAvailable = await checkForCryptoAPIKeyInLocalStorage();
   // print('is crypto api key available : ${isCryptoApiKeyAvailable}');
   WidgetsFlutterBinding.ensureInitialized();
- SharedPreferences sharedPrefs =  await initSharedPreferences();
+  SharedPreferences sharedPrefs = await initSharedPreferences();
 
   bool isAPIKeyPresent = checkForCryptoAPIKeyInLocalStorage(sharedPrefs);
   AwesomeNotifications().initialize(
@@ -35,15 +36,16 @@ void main() async {
       AwesomeNotifications().requestPermissionToSendNotifications();
     }
   });
-  runApp(MyApp(isAPIKeyPresent));
+  runApp(MyApp(isAPIKeyPresent, sharedPrefs));
 
-  // Check
 }
 
 class MyApp extends StatelessWidget {
-  MyApp(this.isAPIKeyPresent);
+  MyApp(this.isAPIKeyPresent, this.sharedPrefs, {Key? key}) : super(key: key);
 
   final bool isAPIKeyPresent;
+  SharedPreferences sharedPrefs;
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -54,8 +56,8 @@ class MyApp extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: isAPIKeyPresent
-          ? MyHomePage(title: 'Flutter Demo Home Page')
-          : ApiKeyInputPage(),
+          ? CryptoSearchAndNotificationSettings()
+          : ApiKeyInputPage(sharedPrefs),
     );
   }
 }
