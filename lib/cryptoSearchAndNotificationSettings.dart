@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:autocomplete_textfield/autocomplete_textfield.dart';
@@ -90,10 +91,27 @@ class _CryptoSearchAndNotificationSettingsState
                     },
                   ),
                   SubscribedCoinsList(key: _cryptoListingWidgetKey),
+                  ElevatedButton.icon(
+                      onPressed: () {
+                        storeCryptoList(_cryptoListingWidgetKey
+                                .currentState?.listOfSubscribedCoins)
+                            .then((value) => {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) =>
+                                          CryptoSearchAndNotificationSettings()))
+                                });
+                      },
+                      icon: Icon(Icons.save),
+                      label: Text('Done')),
                 ],
               ),
             ),
     );
+  }
+
+  storeCryptoList(listOfCoins) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setStringList("CryptoList", listOfCoins);
   }
 
   getAllCoinInfo() async {
@@ -113,6 +131,27 @@ class _SubscribedCoinsListState extends State<SubscribedCoinsList> {
   List<String> listOfSubscribedCoins = [];
 
   @override
+  void initState() {
+    super.initState();
+
+    // Create anonymous function:
+    () async {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      List<String>? stringList;
+      if (prefs.getStringList("CryptoList") == null) {
+        stringList = [];
+      } else {
+        stringList = prefs.getStringList("CryptoList");
+      }
+
+      setState(() {
+        listOfSubscribedCoins = stringList!;
+        // Update your UI with the desired changes.
+      });
+    }();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return ListView.builder(
         shrinkWrap: true,
@@ -122,7 +161,8 @@ class _SubscribedCoinsListState extends State<SubscribedCoinsList> {
               trailing: IconButton(
                 icon: Icon(Icons.close),
                 onPressed: () {
-                  print('you pressed  ${listOfSubscribedCoins[index]} close icon');
+                  print(
+                      'you pressed  ${listOfSubscribedCoins[index]} close icon');
                   setState(() {
                     listOfSubscribedCoins.removeAt(index);
                   });
