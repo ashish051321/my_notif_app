@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:typed_data';
 
-import 'package:awesome_notifications/awesome_notifications.dart';
+// import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:my_notif_app/homePage.dart';
 import 'package:my_notif_app/local_storage_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -23,6 +25,8 @@ class _CryptoSearchAndNotificationSettingsState
       GlobalKey<_SubscribedCoinsListState>();
   bool isLoading = false;
   late List<CryptoInfo> cryptoInfoList;
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
 
   @override
   void initState() {
@@ -100,25 +104,12 @@ class _CryptoSearchAndNotificationSettingsState
                     ),
                     SubscribedCoinsList(key: _cryptoListingWidgetKey),
                     ElevatedButton.icon(
-                        onPressed: () {
-                          storeCryptoList(_cryptoListingWidgetKey
-                                  .currentState?.listOfSubscribedCoins)
-                              .then((value) {
-                            Timer.periodic(new Duration(seconds: 20),
-                                (timer) async {
-                              String response = 'dummy Data';
-                              AwesomeNotifications().createNotification(
-                                  content: NotificationContent(
-                                      id: 10,
-                                      channelKey: 'basic_channel',
-                                      title: 'Count',
-                                      body: response,
-                                      notificationLayout:
-                                          NotificationLayout.BigText));
-                            });
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => HomePage()));
-                          });
+                        onPressed: () async {
+                          await storeCryptoList(_cryptoListingWidgetKey
+                              .currentState?.listOfSubscribedCoins);
+                          await _showInsistentNotification();
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => HomePage()));
                         },
                         icon: Icon(Icons.save),
                         label: Text('Done')),
@@ -137,6 +128,23 @@ class _CryptoSearchAndNotificationSettingsState
   getAllCoinInfo() async {
     dynamic allCoins = await fetchAllCoins();
     return allCoins;
+  }
+
+  Future<void> _showInsistentNotification() async {
+    // This value is from: https://developer.android.com/reference/android/app/Notification.html#FLAG_INSISTENT
+    const int insistentFlag = 4;
+    final AndroidNotificationDetails androidPlatformChannelSpecifics =
+    AndroidNotificationDetails('your channel id', 'your channel name',
+        channelDescription: 'your channel description',
+        importance: Importance.max,
+        priority: Priority.high,
+        ticker: 'ticker',
+        additionalFlags: Int32List.fromList(<int>[insistentFlag]));
+    final NotificationDetails platformChannelSpecifics =
+    NotificationDetails(android: androidPlatformChannelSpecifics);
+    await flutterLocalNotificationsPlugin.show(
+        0, 'insistent title', 'insistent body', platformChannelSpecifics,
+        payload: 'item x');
   }
 }
 
