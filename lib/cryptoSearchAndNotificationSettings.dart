@@ -107,7 +107,8 @@ class _CryptoSearchAndNotificationSettingsState
                         onPressed: () async {
                           await storeCryptoList(_cryptoListingWidgetKey
                               .currentState?.listOfSubscribedCoins);
-                          await _showInsistentNotification();
+                          // await _showInsistentNotification();
+                          await _showProgressNotification();
                           Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) => HomePage()));
                         },
@@ -134,17 +135,43 @@ class _CryptoSearchAndNotificationSettingsState
     // This value is from: https://developer.android.com/reference/android/app/Notification.html#FLAG_INSISTENT
     const int insistentFlag = 4;
     final AndroidNotificationDetails androidPlatformChannelSpecifics =
-    AndroidNotificationDetails('your channel id', 'your channel name',
-        channelDescription: 'your channel description',
-        importance: Importance.max,
-        priority: Priority.high,
-        ticker: 'ticker',
-        additionalFlags: Int32List.fromList(<int>[insistentFlag]));
+        AndroidNotificationDetails('your channel id', 'your channel name',
+            channelDescription: 'your channel description',
+            importance: Importance.max,
+            priority: Priority.high,
+            ticker: 'ticker',
+            additionalFlags: Int32List.fromList(<int>[insistentFlag]));
     final NotificationDetails platformChannelSpecifics =
-    NotificationDetails(android: androidPlatformChannelSpecifics);
+        NotificationDetails(android: androidPlatformChannelSpecifics);
     await flutterLocalNotificationsPlugin.show(
         0, 'insistent title', 'insistent body', platformChannelSpecifics,
         payload: 'item x');
+  }
+
+  Future<void> _showProgressNotification() async {
+    const int maxProgress = 5;
+    for (int i = 0; i <= maxProgress; i++) {
+      await Future<void>.delayed(const Duration(seconds: 1), () async {
+        final AndroidNotificationDetails androidPlatformChannelSpecifics =
+            AndroidNotificationDetails('progress channel', 'progress channel',
+                channelDescription: 'progress channel description',
+                channelShowBadge: false,
+                importance: Importance.max,
+                priority: Priority.high,
+                onlyAlertOnce: true,
+                showProgress: true,
+                maxProgress: maxProgress,
+                progress: i);
+        final NotificationDetails platformChannelSpecifics =
+            NotificationDetails(android: androidPlatformChannelSpecifics);
+        await flutterLocalNotificationsPlugin.show(
+            0,
+            'progress notification title',
+            'progress notification body',
+            platformChannelSpecifics,
+            payload: 'item x');
+      });
+    }
   }
 }
 
