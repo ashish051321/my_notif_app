@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_notif_app/homePage.dart';
 import 'package:my_notif_app/local_storage_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -41,7 +42,7 @@ class ApiKeyInputPage extends StatelessWidget {
               child: ElevatedButton.icon(
                   onPressed: () {
                     storeCryptoKey(sharedPrefs, cryptoKeyFieldController.text).then((value) => {
-                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => CryptoSearchAndNotificationSettings()))
+                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => HomePage()))
                     });
                   },
                   icon: Icon(Icons.save),

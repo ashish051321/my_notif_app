@@ -2,10 +2,14 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:my_notif_app/api_key_input_page.dart';
+import 'package:my_notif_app/homePage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'cryptoSearchAndNotificationSettings.dart';
 import 'local_storage_service.dart';
 import 'notification_service.dart';
+
+// global RouteObserver
+final RouteObserver<PageRoute> routeObserver = new RouteObserver<PageRoute>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,12 +36,13 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Crypto Notifier',
       debugShowCheckedModeBanner: false,
+      navigatorObservers: <NavigatorObserver>[routeObserver],
       theme: ThemeData(
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: isAPIKeyPresent
-          ? CryptoSearchAndNotificationSettings()
+          ? HomePage()
           : ApiKeyInputPage(sharedPrefs),
     );
   }

@@ -37,6 +37,26 @@ Future<void> storeCryptoKey(
   await sharedPrefs.setString(COINMARKETCAP_API_KEY_LABEL, cryptoKey);
 }
 
+Future<void> storeListOfSubscribedCoins(List<CryptoInfo> listOfSubscribedCoins) async {
+  SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
+  String? storedCoinList = sharedPrefs.getString(Constants.SUBSCRIBED_COINS_LIST);
+  if (storedCoinList != null) {
+  await sharedPrefs.setString(Constants.SUBSCRIBED_COINS_LIST, json.encode(listOfSubscribedCoins));
+  }
+}
+
+Future<List<CryptoInfo>> getListOfSubscribedCoins() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  String? coinInfoListRawString = prefs.getString(Constants.SUBSCRIBED_COINS_LIST);
+  if(coinInfoListRawString == null){
+    return Future.value(List.empty());
+  }
+  List<dynamic> listOfCoins = json.decode(coinInfoListRawString);
+  List<CryptoInfo> cryptoInfoList =
+  listOfCoins.map((e) => CryptoInfo.fromJson(e)).toList();
+  return cryptoInfoList;
+}
+
 // utils/shared_prefs.dart
 Future<SharedPreferences> initSharedPreferences() async {
   SharedPreferences _sharedPrefs = await SharedPreferences.getInstance();

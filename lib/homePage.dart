@@ -1,15 +1,46 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:my_notif_app/subscribed_coins_view.dart';
 import 'cryptoSearchAndNotificationSettings.dart';
-import 'crypto_backend.dart';
+import 'main.dart';
 
-// Displays the coins that are marked for Notification
-// Will later give options to edit the API Keys and the notification frequency
-class HomePage extends StatelessWidget {
+// final RouteObserver<ModalRoute> routeObserver = RouteObserver<ModalRoute>();
+
+class HomePage extends StatefulWidget {
+  HomePage({Key? key}) : super(key: key);
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> with RouteAware {
   bool isLoading = false;
 
-  HomePage({Key? key}) : super(key: key);
+  @override
+  void initState() {
+    // WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+    //   routeObserver.subscribe(this, MaterialPageRoute(builder: builder));
+    // });
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context) as PageRoute);
+  }
+
+  // Called when the top route has been popped off, and the current route shows up.
+  void didPopNext() {
+    Future.delayed(const Duration(milliseconds: 500), () {
+      setState(() {
+        isLoading = false;
+      });
+
+    });
+    setState(() {
+      isLoading = true;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +56,7 @@ class HomePage extends StatelessWidget {
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   children: [
-                    SubscribedCoinsList(),
+                    SubscribedCoinsList(false),
                     ElevatedButton.icon(
                         onPressed: () {
                           Navigator.of(context).push(MaterialPageRoute(
@@ -38,53 +69,6 @@ class HomePage extends StatelessWidget {
                 ),
               ),
             ),
-    );
-  }
-}
-
-class SubscribedCoinsList extends StatefulWidget {
-  const SubscribedCoinsList({Key? key}) : super(key: key);
-
-  @override
-  _SubscribedCoinsListState createState() => _SubscribedCoinsListState();
-}
-
-class _SubscribedCoinsListState extends State<SubscribedCoinsList> {
-  List<String> listOfSubscribedCoins = [];
-
-  @override
-  void initState() {
-    super.initState();
-
-    // Create anonymous function:
-    () async {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      List<String>? stringList;
-      if (prefs.getStringList("CryptoList") == null) {
-        stringList = [];
-      } else {
-        stringList = prefs.getStringList("CryptoList");
-      }
-
-      setState(() {
-        listOfSubscribedCoins = stringList!;
-        // Update your UI with the desired changes.
-      });
-    }();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      // height: 400,
-
-      child: ListView.builder(
-          shrinkWrap: true,
-          scrollDirection: Axis.vertical,
-          itemCount: listOfSubscribedCoins.length,
-          itemBuilder: (BuildContext context, int index) {
-            return ListTile(title: Text("${listOfSubscribedCoins[index]}"));
-          }),
     );
   }
 }
