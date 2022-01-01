@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:my_notif_app/api_key_input_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'cryptoSearchAndNotificationSettings.dart';

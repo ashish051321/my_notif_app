@@ -24,7 +24,7 @@ Future<List<CryptoInfo>> fetchAndSaveCryptoCoinsList() async {
     List<CryptoInfo> cryptoInfoList = await fetchAllCoins();
     await prefs.setString(
         Constants.COIN_INFO_LIST, json.encode(cryptoInfoList));
-    return List<CryptoInfo>.empty();
+    return cryptoInfoList;
   }
   List<dynamic> listOfCoins = json.decode(coinInfoListRawString);
   List<CryptoInfo> cryptoInfoList =

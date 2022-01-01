@@ -32,17 +32,21 @@ class _CryptoSearchAndNotificationSettingsState
   void initState() {
     // TODO: implement initState
     super.initState();
+    setState(() {
+      isLoading = true;
+    });
     () async {
       List<CryptoInfo> response = await fetchAndSaveCryptoCoinsList();
       setState(() {
         cryptoInfoList = response;
+        isLoading = false;
       });
     }();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return isLoading ? CircularProgressIndicator() : Scaffold(
       appBar: AppBar(
         title: const Text('Setup Notification for Crypto Coins'),
       ),
