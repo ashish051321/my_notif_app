@@ -40,9 +40,7 @@ Future<void> storeCryptoKey(
 Future<void> storeListOfSubscribedCoins(List<CryptoInfo> listOfSubscribedCoins) async {
   SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
   String? storedCoinList = sharedPrefs.getString(Constants.SUBSCRIBED_COINS_LIST);
-  if (storedCoinList != null) {
   await sharedPrefs.setString(Constants.SUBSCRIBED_COINS_LIST, json.encode(listOfSubscribedCoins));
-  }
 }
 
 Future<List<CryptoInfo>> getListOfSubscribedCoins() async {

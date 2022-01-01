@@ -1,21 +1,24 @@
 class CryptoInfo {
   String name, symbol;
   String currency = 'INR';
+  double price;
 
-  CryptoInfo(this.name, this.symbol, this.currency);
+  CryptoInfo(this.name, this.symbol, this.currency, this.price);
 
   static CryptoInfo fromJson(Map<String, dynamic> json) {
     String name = json['name'];
     String symbol = json['symbol'];
-    String currency = json['currency'] ?? 'INR' ;
-    return CryptoInfo(name, symbol, currency);
+    String currency = json['currency'] ?? 'INR';
+    double price = json['price'] ?? 0;
+    return CryptoInfo(name, symbol, currency, price);
   }
 
   Map<String, dynamic> toJson() {
     return {
       'name': name,
       'symbol': symbol,
-      'currency':currency
+      'currency': currency,
+      'price': price
     };
   }
 }

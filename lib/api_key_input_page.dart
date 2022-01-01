@@ -6,8 +6,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'cryptoSearchAndNotificationSettings.dart';
 
 class ApiKeyInputPage extends StatelessWidget {
-  TextEditingController cryptoKeyFieldController = new TextEditingController();
-   SharedPreferences sharedPrefs;
+  TextEditingController cryptoKeyFieldController = TextEditingController();
+  SharedPreferences sharedPrefs;
+
   ApiKeyInputPage(this.sharedPrefs, {Key? key}) : super(key: key);
 
   @override
@@ -26,7 +27,8 @@ class ApiKeyInputPage extends StatelessWidget {
               child: TextField(
                 controller: cryptoKeyFieldController,
                 decoration: InputDecoration(
-                    hintText: 'Enter Crypto API Key from https://pro.coinmarketcap.com',
+                    hintText:
+                        'Enter Crypto API Key from https://pro.coinmarketcap.com',
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(width: 3, color: Colors.blue),
                       borderRadius: BorderRadius.circular(15),
@@ -41,9 +43,11 @@ class ApiKeyInputPage extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 80.0),
               child: ElevatedButton.icon(
                   onPressed: () {
-                    storeCryptoKey(sharedPrefs, cryptoKeyFieldController.text).then((value) => {
-                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => HomePage()))
-                    });
+                    storeCryptoKey(sharedPrefs, cryptoKeyFieldController.text)
+                        .then((value) => {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => HomePage()))
+                            });
                   },
                   icon: Icon(Icons.save),
                   label: Text('Save')),

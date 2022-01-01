@@ -20,7 +20,8 @@ class CryptoSearchAndNotificationSettings extends StatefulWidget {
 
 class _CryptoSearchAndNotificationSettingsState
     extends State<CryptoSearchAndNotificationSettings> {
-  final GlobalKey<dynamic> _cryptoListingWidgetKey = GlobalKey();
+  final GlobalKey<_SubscribedCoinsListState> _cryptoListingWidgetKey =
+      GlobalKey();
   bool isLoading = false;
   late List<CryptoInfo> cryptoInfoList;
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
@@ -103,16 +104,17 @@ class _CryptoSearchAndNotificationSettingsState
                                 _cryptoListingWidgetKey
                                     .currentState?.listOfSubscribedCoins
                                     .add(CryptoInfo(
-                                        option.toString().split(":")[0],
-                                        option.toString().split(":")[1],
-                                        "INR"));
+                                        option.toString().split(":")[0].trim(),
+                                        option.toString().split(":")[1].trim(),
+                                        "INR",
+                                        0));
                               });
                               storeListOfSubscribedCoins(_cryptoListingWidgetKey
-                                  .currentState?.listOfSubscribedCoins);
+                                  .currentState!.listOfSubscribedCoins);
                             },
                           ),
-                          SubscribedCoinsList(true,
-                              key: _cryptoListingWidgetKey),
+                          SubscribedCoinsList(
+                              key: _cryptoListingWidgetKey, isEditable: true),
                           // ElevatedButton.icon(
                           //     onPressed: () {
                           //       // storeCryptoList(_cryptoListingWidgetKey
@@ -180,5 +182,61 @@ class _CryptoSearchAndNotificationSettingsState
             payload: 'item x');
       });
     }
+  }
+}
+
+class SubscribedCoinsList extends StatefulWidget {
+  bool isEditable;
+
+  SubscribedCoinsList({Key? key, required this.isEditable}) : super(key: key);
+
+  @override
+  _SubscribedCoinsListState createState() => _SubscribedCoinsListState();
+}
+
+class _SubscribedCoinsListState extends State<SubscribedCoinsList>
+    with SingleTickerProviderStateMixin {
+  List<CryptoInfo> listOfSubscribedCoins = List.empty(growable: true);
+
+  @override
+  void initState() {
+    super.initState();
+    // Create anonymous function:
+    () async {
+      listOfSubscribedCoins = List.empty(growable: true);
+      List<CryptoInfo> response = await getListOfSubscribedCoins();
+      setState(() {
+        listOfSubscribedCoins.addAll(response);
+        // Update your UI with the desired changes.
+      });
+    }();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      child: ListView.builder(
+          shrinkWrap: true,
+          scrollDirection: Axis.vertical,
+          itemCount: listOfSubscribedCoins.length,
+          itemBuilder: (BuildContext context, int index) {
+            return ListTile(
+                trailing: !widget.isEditable
+                    ? SizedBox()
+                    : IconButton(
+                        icon: Icon(Icons.close),
+                        onPressed: () {
+                          print(
+                              'you pressed  ${listOfSubscribedCoins[index]} close icon');
+                          setState(() {
+                            listOfSubscribedCoins.removeAt(index);
+                            storeListOfSubscribedCoins(listOfSubscribedCoins);
+                          });
+                        },
+                      ),
+                title: Text(
+                    "${listOfSubscribedCoins[index].name} : ${listOfSubscribedCoins[index].symbol}"));
+          }),
+    );
   }
 }
