@@ -3,9 +3,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:my_notif_app/homePage.dart';
 import 'package:my_notif_app/local_storage_service.dart';
-import 'package:my_notif_app/subscribed_coins_view.dart';
 
 import 'crypto_backend.dart';
 import 'modelAndConstants.dart';
@@ -60,77 +58,73 @@ class _CryptoSearchAndNotificationSettingsState
                       padding: const EdgeInsets.all(16.0),
                       child: Column(
                         children: [
-                          Autocomplete(optionsBuilder:
-                              (TextEditingValue searchStringVal) {
-                            if (searchStringVal.text.isEmpty) {
-                              return const Iterable<String>.empty();
-                            } else {
-                              return cryptoInfoList
-                                  .where((CryptoInfo item) =>
-                                      item.name.toLowerCase().contains(
-                                          searchStringVal.text.toLowerCase()) ||
-                                      item.symbol.toLowerCase().contains(
-                                          searchStringVal.text.toLowerCase()))
-                                  .map((e) => '${e.name} : ${e.symbol}');
-                            }
-                          }, fieldViewBuilder: (context, textEditingController,
-                              focusNode, onFieldSubmitted) {
-                            this.textEdCtrlr = textEditingController;
-                            return TextField(
-                              controller: textEditingController,
-                              focusNode: focusNode,
-                              onEditingComplete: onFieldSubmitted,
-                              decoration: InputDecoration(
-                                border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                    borderSide:
-                                        BorderSide(color: Colors.grey[300]!)),
-                                focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                    borderSide:
-                                        BorderSide(color: Colors.grey[300]!)),
-                                enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                    borderSide:
-                                        BorderSide(color: Colors.grey[300]!)),
-                                hintText: "Search Crypto Coin",
-                                prefixIcon: Icon(Icons.search),
-                              ),
-                            );
-                          }, onSelected: (option) {
-                            bool isCoinAlreadyPresent = false;
-                            _cryptoListingWidgetKey.currentState?.setState(() {
-                              List<CryptoInfo>? listOfSubscribedCoins =
-                                  _cryptoListingWidgetKey
-                                      .currentState?.listOfSubscribedCoins;
-                              if (listOfSubscribedCoins != null) {
-                                isCoinAlreadyPresent = listOfSubscribedCoins!
-                                    .where((item) =>
-                                        item.symbol.toUpperCase() ==
-                                        option
-                                            .toString()
-                                            .split(":")[1]
-                                            .trim()
-                                            .toUpperCase())
-                                    .toList()
-                                    .isNotEmpty;
-                              }
-                              if (!isCoinAlreadyPresent) {
-                                _cryptoListingWidgetKey
-                                    .currentState?.listOfSubscribedCoins
-                                    .add(CryptoInfo(
-                                        option.toString().split(":")[0].trim(),
-                                        option.toString().split(":")[1].trim(),
-                                        "INR",
-                                        0));
-
-                                storeListOfSubscribedCoins(
+                          Autocomplete<CryptoInfo>(
+                              optionsBuilder:
+                                  (TextEditingValue searchStringVal) {
+                                if (searchStringVal.text.isEmpty) {
+                                  return const Iterable<CryptoInfo>.empty();
+                                } else {
+                                  return cryptoInfoList
+                                      .where((CryptoInfo item) =>
+                                          item.name.toLowerCase().contains(
+                                              searchStringVal.text
+                                                  .toLowerCase()) ||
+                                          item.symbol.toLowerCase().contains(
+                                              searchStringVal.text
+                                                  .toLowerCase()))
+                                      .toList();
+                                  // .map((e) => '${e.name} : ${e.symbol}');
+                                }
+                              },
+                              displayStringForOption: (CryptoInfo option) =>
+                                  "${option.name} : ${option.symbol}",
+                              fieldViewBuilder: (context, textEditingController,
+                                  focusNode, onFieldSubmitted) {
+                                textEdCtrlr = textEditingController;
+                                return TextField(
+                                  controller: textEditingController,
+                                  focusNode: focusNode,
+                                  onEditingComplete: onFieldSubmitted,
+                                  decoration: InputDecoration(
+                                    border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                        borderSide: BorderSide(
+                                            color: Colors.grey[300]!)),
+                                    focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                        borderSide: BorderSide(
+                                            color: Colors.grey[300]!)),
+                                    enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                        borderSide: BorderSide(
+                                            color: Colors.grey[300]!)),
+                                    hintText: "Search Crypto Coin",
+                                    prefixIcon: Icon(Icons.search),
+                                  ),
+                                );
+                              },
+                              onSelected: (CryptoInfo option) {
+                                bool isCoinAlreadyPresent = false;
+                                _cryptoListingWidgetKey.currentState
+                                    ?.setState(() {
+                                  List<CryptoInfo>? listOfSubscribedCoins =
+                                      _cryptoListingWidgetKey
+                                          .currentState?.listOfSubscribedCoins;
+                                  if (listOfSubscribedCoins != null) {
+                                    isCoinAlreadyPresent =
+                                        listOfSubscribedCoins.contains(option);
+                                  }
+                                  if (!isCoinAlreadyPresent) {
                                     _cryptoListingWidgetKey
-                                        .currentState!.listOfSubscribedCoins);
-                              }
-                              this.textEdCtrlr.clear();
-                            });
-                          }),
+                                        .currentState?.listOfSubscribedCoins
+                                        .add(option);
+                                    storeListOfSubscribedCoins(
+                                        _cryptoListingWidgetKey.currentState!
+                                            .listOfSubscribedCoins);
+                                  }
+                                  textEdCtrlr.clear();
+                                });
+                              }),
                           SubscribedCoinsList(
                               key: _cryptoListingWidgetKey, isEditable: true),
                           // ElevatedButton.icon(

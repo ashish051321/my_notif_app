@@ -3,8 +3,6 @@ import 'package:my_notif_app/homePage.dart';
 import 'package:my_notif_app/local_storage_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'cryptoSearchAndNotificationSettings.dart';
-
 class ApiKeyInputPage extends StatelessWidget {
   TextEditingController cryptoKeyFieldController = TextEditingController();
   SharedPreferences sharedPrefs;

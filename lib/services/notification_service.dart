@@ -26,7 +26,7 @@ cancelNotificationBackgroundTask(){
 triggerNotification() async {
   List<CryptoInfo> listofCrypto = await getListOfSubscribedCoins();
   listofCrypto = await fetchCoinDetails(
-      listofCrypto.map((item) => item.symbol.trim()).join(","));
+      listofCrypto.map((item) => item.id.trim()).join(","));
   if (listofCrypto.isNotEmpty) {
     String message = listofCrypto
         .map((item) =>

@@ -30,12 +30,12 @@ Future<List<CryptoInfo>> fetchAllCoins() async {
 //   return Future.delayed(const Duration(seconds: 2), () => print('Large Latte'));
 }
 
-Future<List<CryptoInfo>> fetchCoinDetails(String coinSymbols) async {
+Future<List<CryptoInfo>> fetchCoinDetails(String coinIds) async {
   try {
     var url = Uri.parse('https://parseapi.back4app.com/functions/getCoinInfo');
-    print('coinSymbols : ${coinSymbols}');
+    print('coinIds : ${coinIds}');
     var response = await http.post(url, body: {
-      'coins': coinSymbols,
+      'coinIds': coinIds,
       'currency': 'INR'
     }, headers: {
       'X-Parse-Application-Id': 'yKujveqA2lJWMJ0mJhWGYudoMncTnfE7a5HKoaNZ',
