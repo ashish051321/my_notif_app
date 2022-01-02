@@ -162,14 +162,18 @@ Future<void> _showInsistentNotification(String message) async {
 
 Future<void> _showNotification(String message) async {
   const AndroidNotificationDetails androidPlatformChannelSpecifics =
-      AndroidNotificationDetails('your channel id', 'your channel name',
-          channelDescription: 'your channel description',
-          importance: Importance.low,
-          priority: Priority.low,
-          onlyAlertOnce: true);
+      AndroidNotificationDetails(
+    'channel1',
+    'channel1',
+    channelDescription: 'channel1',
+    importance: Importance.max,
+    priority: Priority.high,
+    enableVibration: false,
+    playSound: false,
+  );
   const NotificationDetails platformChannelSpecifics =
       NotificationDetails(android: androidPlatformChannelSpecifics);
   await flutterLocalNotificationsPlugin.show(
-      0, 'Crypto Price Alert', message, platformChannelSpecifics,
+      0, 'Crypto Price Alert (INR)', message, platformChannelSpecifics,
       payload: 'item x');
 }
