@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:my_notif_app/local_storage_service.dart';
 import 'package:my_notif_app/modelAndConstants.dart';
+import 'package:my_notif_app/services/notification_service.dart';
 
 // import 'package:my_notif_app/subscribed_coins_view.dart';
 import 'cryptoSearchAndNotificationSettings.dart';
@@ -13,9 +14,6 @@ import 'main.dart';
 
 // final RouteObserver<ModalRoute> routeObserver = RouteObserver<ModalRoute>();
 var setIntervalHandle;
-final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-    FlutterLocalNotificationsPlugin();
-
 class HomePage extends StatefulWidget {
   HomePage({Key? key}) : super(key: key);
 
@@ -79,17 +77,17 @@ class _HomePageState extends State<HomePage> with RouteAware {
                     ElevatedButton.icon(
                         onPressed: () {
                           if (isNotificationON) {
-                            setIntervalHandle.cancel();
+                            cancelNotificationBackgroundTask();
                             setState(() {
                               isNotificationON = false;
                             });
                             return;
                           }
-                          triggerNotification();
-                          setIntervalHandle =
-                              Timer.periodic(Duration(seconds: 600), (timer) {
-                            triggerNotification();
-                          });
+                          triggerBackgroundTaskforNotification();
+                          // setIntervalHandle =
+                          //     Timer.periodic(Duration(seconds: 600), (timer) {
+                          //   triggerNotification();
+                          // });
                           setState(() {
                             isNotificationON = true;
                           });
@@ -105,75 +103,4 @@ class _HomePageState extends State<HomePage> with RouteAware {
     );
   }
 
-  triggerNotification() async {
-    List<CryptoInfo> listofCrypto = await getListOfSubscribedCoins();
-    listofCrypto = await fetchCoinDetails(
-        listofCrypto.map((item) => item.symbol.trim()).join(","));
-    if (listofCrypto.isNotEmpty) {
-      String message = listofCrypto
-          .map((item) =>
-              '${item.symbol} : ${double.parse(item.price.toStringAsFixed(2))}')
-          .toList()
-          .toString();
-      _showNotification(message);
-    }
-  }
-}
-
-Future<void> _showProgressNotification() async {
-  const int maxProgress = 5;
-  for (int i = 0; i <= maxProgress; i++) {
-    await Future<void>.delayed(const Duration(seconds: 1), () async {
-      final AndroidNotificationDetails androidPlatformChannelSpecifics =
-          AndroidNotificationDetails('progress channel', 'progress channel',
-              channelDescription: 'progress channel description',
-              channelShowBadge: false,
-              importance: Importance.max,
-              priority: Priority.high,
-              onlyAlertOnce: true,
-              showProgress: true,
-              maxProgress: maxProgress,
-              progress: i);
-      final NotificationDetails platformChannelSpecifics =
-          NotificationDetails(android: androidPlatformChannelSpecifics);
-      await flutterLocalNotificationsPlugin.show(
-          0, 'Crypto Prices', '', platformChannelSpecifics,
-          payload: 'item x');
-    });
-  }
-}
-
-Future<void> _showInsistentNotification(String message) async {
-  // This value is from: https://developer.android.com/reference/android/app/Notification.html#FLAG_INSISTENT
-  const int insistentFlag = 4;
-  final AndroidNotificationDetails androidPlatformChannelSpecifics =
-      AndroidNotificationDetails('your channel id', 'your channel name',
-          channelDescription: 'your channel description',
-          importance: Importance.max,
-          priority: Priority.high,
-          ticker: 'ticker',
-          additionalFlags: Int32List.fromList(<int>[insistentFlag]));
-  final NotificationDetails platformChannelSpecifics =
-      NotificationDetails(android: androidPlatformChannelSpecifics);
-  await flutterLocalNotificationsPlugin.show(
-      0, 'Crypto Notifications', message, platformChannelSpecifics,
-      payload: 'item x');
-}
-
-Future<void> _showNotification(String message) async {
-  const AndroidNotificationDetails androidPlatformChannelSpecifics =
-      AndroidNotificationDetails(
-    'channel1',
-    'channel1',
-    channelDescription: 'channel1',
-    importance: Importance.max,
-    priority: Priority.high,
-    enableVibration: false,
-    playSound: false,
-  );
-  const NotificationDetails platformChannelSpecifics =
-      NotificationDetails(android: androidPlatformChannelSpecifics);
-  await flutterLocalNotificationsPlugin.show(
-      0, 'Crypto Price Alert (INR)', message, platformChannelSpecifics,
-      payload: 'item x');
 }

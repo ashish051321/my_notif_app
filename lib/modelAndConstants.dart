@@ -26,4 +26,5 @@ class CryptoInfo {
 class Constants {
   static String COIN_INFO_LIST = "COIN_INFO_LIST";
   static String SUBSCRIBED_COINS_LIST = "SUBSCRIBED_COINS_LIST";
+  static String NOTIFICATION_BKG_TASK_TAG = "NOTIFICATION_BKG_TASK_TAG" ;
 }

@@ -30,6 +30,7 @@ dependencies:
   shared_preferences: 2.0.11
   flutter_local_notifications: ^9.1.5
   autocomplete_textfield: 1.7.3
+  workmanager: ^0.4.1
   http: any
   flutter:
     sdk: flutter
