@@ -19,7 +19,7 @@ triggerBackgroundTaskforNotification() {
       tag: Constants.NOTIFICATION_BKG_TASK_TAG);
 }
 
-cancelNotificationBackgroundTask(){
+cancelNotificationBackgroundTask() {
   Workmanager().cancelByTag(Constants.NOTIFICATION_BKG_TASK_TAG);
 }
 
@@ -79,15 +79,13 @@ Future<void> _showInsistentNotification(String message) async {
 
 Future<void> _showNotification(String message) async {
   const AndroidNotificationDetails androidPlatformChannelSpecifics =
-      AndroidNotificationDetails(
-    'channel1',
-    'channel1',
-    channelDescription: 'channel1',
-    importance: Importance.max,
-    priority: Priority.high,
-    enableVibration: false,
-    playSound: false,
-  );
+      AndroidNotificationDetails('channel1', 'channel1',
+          channelDescription: 'channel1',
+          importance: Importance.max,
+          priority: Priority.high,
+          enableVibration: false,
+          playSound: false,
+          styleInformation: BigTextStyleInformation(''));
   const NotificationDetails platformChannelSpecifics =
       NotificationDetails(android: androidPlatformChannelSpecifics);
   await flutterLocalNotificationsPlugin.show(
