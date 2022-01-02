@@ -3,12 +3,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:my_notif_app/api_key_input_page.dart';
 import 'package:my_notif_app/homePage.dart';
+import 'package:my_notif_app/modelAndConstants.dart';
 import 'package:my_notif_app/services/notification_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:workmanager/workmanager.dart';
-import 'cryptoSearchAndNotificationSettings.dart';
 import 'local_storage_service.dart';
-import 'notification_service.dart';
+import 'init_notification_service.dart';
 
 const String TAG = "BackGround_Work";
 
@@ -19,8 +19,9 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Workmanager().initialize(
       callbackDispatcher, // The top level function, aka callbackDispatcher
-      isInDebugMode: true // If enabled it will post a notification whenever the task is running. Handy for debugging tasks
-  );
+      isInDebugMode:
+          true // If enabled it will post a notification whenever the task is running. Handy for debugging tasks
+      );
   await NotificationService().init();
 
   SharedPreferences sharedPrefs = await initSharedPreferences();
@@ -55,8 +56,14 @@ class MyApp extends StatelessWidget {
 }
 
 void callbackDispatcher() {
-  Workmanager().executeTask((task, inputData) {
-    triggerNotification();
-    return Future.value(true);
+  Workmanager().executeTask((task, inputData) async {
+    //use switch case
+    switch (task) {
+      case Constants.NOTIFICATION_BKG_TASK:
+        await triggerNotification();
+        return Future.value(true);
+      default:
+        return Future.value(true);
+    }
   });
 }

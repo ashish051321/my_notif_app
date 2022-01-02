@@ -24,7 +24,8 @@ class CryptoInfo {
 }
 
 class Constants {
-  static String COIN_INFO_LIST = "COIN_INFO_LIST";
-  static String SUBSCRIBED_COINS_LIST = "SUBSCRIBED_COINS_LIST";
-  static String NOTIFICATION_BKG_TASK_TAG = "NOTIFICATION_BKG_TASK_TAG" ;
+  static const String COIN_INFO_LIST = "COIN_INFO_LIST";
+  static const String SUBSCRIBED_COINS_LIST = "SUBSCRIBED_COINS_LIST";
+  static const String NOTIFICATION_BKG_TASK = "NOTIFICATION_BKG_TASK";
+  static const String NOTIFICATION_BKG_TASK_TAG = "NOTIFICATION_BKG_TASK_TAG" ;
 }
