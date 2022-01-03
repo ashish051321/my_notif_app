@@ -10,8 +10,6 @@ import 'package:workmanager/workmanager.dart';
 import 'local_storage_service.dart';
 import 'init_notification_service.dart';
 
-const String TAG = "BackGround_Work";
-
 // global RouteObserver
 final RouteObserver<PageRoute> routeObserver = new RouteObserver<PageRoute>();
 
@@ -20,7 +18,7 @@ void main() async {
   Workmanager().initialize(
       callbackDispatcher, // The top level function, aka callbackDispatcher
       isInDebugMode:
-          false // If enabled it will post a notification whenever the task is running. Handy for debugging tasks
+          true // If enabled it will post a notification whenever the task is running. Handy for debugging tasks
       );
   await NotificationService().init();
 
@@ -56,14 +54,14 @@ class MyApp extends StatelessWidget {
 }
 
 void callbackDispatcher() {
+  print('------------------------->>>>>>>>>>>>>>>> WorkManager called the callbackDispatcher  >>>>>>>>>>>>>>>>>');
   Workmanager().executeTask((task, inputData) async {
     //use switch case
     switch (task) {
       case Constants.NOTIFICATION_BKG_TASK:
         await triggerNotification();
         return Future.value(true);
-      default:
-        return Future.value(true);
     }
+    return Future.value(true);
   });
 }

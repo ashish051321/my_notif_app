@@ -12,7 +12,7 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 
 triggerBackgroundTaskforNotification() {
   // Periodic task registration
-  Workmanager().registerPeriodicTask("1", Constants.NOTIFICATION_BKG_TASK,
+  Workmanager().registerPeriodicTask(Constants.NOTIFICATION_BKG_TASK, Constants.NOTIFICATION_BKG_TASK,
       // When no frequency is provided the default 15 minutes is set.
       // Minimum frequency is 15 min. Android will automatically change your frequency to 15 min if you have configured a lower frequency.
       frequency: Duration(minutes: 15),
@@ -20,7 +20,13 @@ triggerBackgroundTaskforNotification() {
 }
 
 cancelNotificationBackgroundTask() {
-  Workmanager().cancelByTag(Constants.NOTIFICATION_BKG_TASK_TAG);
+  try {
+    print(
+        '------------------------->>>>>>>>>>>>>>>> WorkManager called the cancelByTag  >>>>>>>>>>>>>>>>>');
+    Workmanager().cancelByTag(Constants.NOTIFICATION_BKG_TASK_TAG);
+  } catch(e){
+    print('Exception occurred during task cancellation');
+  }
 }
 
 triggerNotification() async {

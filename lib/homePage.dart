@@ -21,17 +21,10 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
+// Crypto Notification Summary Page
 class _HomePageState extends State<HomePage> with RouteAware {
   bool isLoading = false;
   bool isNotificationON = false;
-
-  @override
-  void initState() {
-    // WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
-    //   routeObserver.subscribe(this, MaterialPageRoute(builder: builder));
-    // });
-    super.initState();
-  }
 
   @override
   void didChangeDependencies() {
@@ -84,10 +77,6 @@ class _HomePageState extends State<HomePage> with RouteAware {
                             return;
                           }
                           triggerBackgroundTaskforNotification();
-                          // setIntervalHandle =
-                          //     Timer.periodic(Duration(seconds: 600), (timer) {
-                          //   triggerNotification();
-                          // });
                           setState(() {
                             isNotificationON = true;
                           });

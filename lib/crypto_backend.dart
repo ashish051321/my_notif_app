@@ -9,7 +9,7 @@ import 'modelAndConstants.dart';
 
 void main() {
   print('Program started');
-  print(fetchCoinDetails("ONE,ETH,BTC"));
+  print(fetchCoinDetails("1,2,3"));
   print('Program finished');
 }
 
