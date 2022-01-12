@@ -54,6 +54,7 @@ class MyApp extends StatelessWidget {
 }
 
 void callbackDispatcher() {
+  WidgetsFlutterBinding.ensureInitialized();
   print('------------------------->>>>>>>>>>>>>>>> WorkManager called the callbackDispatcher  >>>>>>>>>>>>>>>>>');
   Workmanager().executeTask((task, inputData) async {
     //use switch case
